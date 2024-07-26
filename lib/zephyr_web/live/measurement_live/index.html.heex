@@ -1,0 +1,46 @@
+<.header>
+  Listing Measurements
+  <:actions>
+    <.link patch={~p"/measurements/new"}>
+      <.button>New Measurement</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="measurements"
+  rows={@streams.measurements}
+  row_click={fn {_id, measurement} -> JS.navigate(~p"/measurements/#{measurement}") end}
+>
+  <:col :let={{_id, measurement}} label="Temperature"><%= measurement.temperature %></:col>
+  <:col :let={{_id, measurement}} label="Humidity"><%= measurement.humidity %></:col>
+  <:col :let={{_id, measurement}} label="Pressure"><%= measurement.pressure %></:col>
+  <:col :let={{_id, measurement}} label="Pm10"><%= measurement.pm10 %></:col>
+  <:col :let={{_id, measurement}} label="Pm25"><%= measurement.pm25 %></:col>
+  <:col :let={{_id, measurement}} label="Gas resistance"><%= measurement.gas_resistance %></:col>
+  <:action :let={{_id, measurement}}>
+    <div class="sr-only">
+      <.link navigate={~p"/measurements/#{measurement}"}>Show</.link>
+    </div>
+    <.link patch={~p"/measurements/#{measurement}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, measurement}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: measurement.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="measurement-modal" show on_cancel={JS.patch(~p"/measurements")}>
+  <.live_component
+    module={ZephyrWeb.MeasurementLive.FormComponent}
+    id={@measurement.id || :new}
+    title={@page_title}
+    action={@live_action}
+    measurement={@measurement}
+    patch={~p"/measurements"}
+  />
+</.modal>

@@ -18,6 +18,13 @@ defmodule ZephyrWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    live "/measurements", MeasurementLive.Index, :index
+    live "/measurements/new", MeasurementLive.Index, :new
+    live "/measurements/:id/edit", MeasurementLive.Index, :edit
+
+    live "/measurements/:id", MeasurementLive.Show, :show
+    live "/measurements/:id/show/edit", MeasurementLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

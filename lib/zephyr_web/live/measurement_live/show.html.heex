@@ -1,0 +1,31 @@
+<.header>
+  Measurement <%= @measurement.id %>
+  <:subtitle>This is a measurement record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/measurements/#{@measurement}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit measurement</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Temperature"><%= @measurement.temperature %></:item>
+  <:item title="Humidity"><%= @measurement.humidity %></:item>
+  <:item title="Pressure"><%= @measurement.pressure %></:item>
+  <:item title="Pm10"><%= @measurement.pm10 %></:item>
+  <:item title="Pm25"><%= @measurement.pm25 %></:item>
+  <:item title="Gas resistance"><%= @measurement.gas_resistance %></:item>
+</.list>
+
+<.back navigate={~p"/measurements"}>Back to measurements</.back>
+
+<.modal :if={@live_action == :edit} id="measurement-modal" show on_cancel={JS.patch(~p"/measurements/#{@measurement}")}>
+  <.live_component
+    module={ZephyrWeb.MeasurementLive.FormComponent}
+    id={@measurement.id}
+    title={@page_title}
+    action={@live_action}
+    measurement={@measurement}
+    patch={~p"/measurements/#{@measurement}"}
+  />
+</.modal>
